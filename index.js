@@ -33,7 +33,7 @@ app.use('/api/products', apiProductRoute);
 
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(sessionMiddleware);
-// app.use(csurf({ cookie: true }));
+app.use(csurf({ cookie: true }));
 
 app.use(express.static('public'));
 
