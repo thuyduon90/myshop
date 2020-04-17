@@ -1,14 +1,16 @@
 extends ../layouts/common.pug
 
 block content
-  h1 Create user
+  h1 Create user 
 
   if errors
     each error in errors
       .alert.alert-danger= error
 
   form(action="/users/create", method="POST", enctype="multipart/form-data")
+    
     .form-group
+      input(type="hidden", name="_csrf", value=csrfToken)
       label(for="name") Name
       input#name.form-control(name="name", type="text", value=values ? values.name : "")
 

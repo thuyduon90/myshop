@@ -8,14 +8,15 @@ module.exports.index = async function(req, res) {
     });
 };
 
-module.exports.search = function(req, res) {
+module.exports.search = async function(req, res) {
     var q = req.query.q;
-    var matchedUsers = db.get('users').value().filter(function(user) {
+    var matchedUsers = await User.find();
+    matchedUsers = matchedUsers.filter(function(user) {
         return user.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-    });
-
+    })
     res.render('users/index', {
-        users: matchedUsers
+        users: matchedUsers,
+        searchKey: q
     });
 }
 
@@ -24,11 +25,9 @@ module.exports.create = function(req, res) {
 };
 
 
-module.exports.get = function(req, res) {
+module.exports.get = async function(req, res) {
     var id = req.params.id;
-
-    var user = db.get('users').find({ id: id }).value();
-
+    var user = await User.findOne({ _id: id });
     res.render('users/view', {
         user: user
     });
