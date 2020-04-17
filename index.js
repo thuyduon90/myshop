@@ -3,7 +3,7 @@ require('dotenv').config();
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var csurf = require('csurf');
+var csrf = require('csurf');
 var mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URL);
@@ -33,22 +33,20 @@ app.use('/api/products', apiProductRoute);
 
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(sessionMiddleware);
-app.use(csurf({ cookie: true }));
+var csrfProtection = csrf({ cookie: true })
 
 app.use(express.static('public'));
 
 // Routes
 app.get('/', function(req, res) {
-    res.render('index', {
-        name: 'AAA'
-    });
+    res.render('index');
 });
 
-app.use('/users', authMiddleware.requireAuth, userRoute);
+app.use('/users', userRoute);
 app.use('/auth', authRoute);
 app.use('/products', productRoute);
 app.use('/cart', cartRoute);
-app.use('/transfer', authMiddleware.requireAuth, transferRoute);
+app.use('/transfer', csrfProtection, authMiddleware.requireAuth, transferRoute);
 
 app.listen(port, function() {
     console.log('Server listening on port ' + port);

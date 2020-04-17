@@ -1,6 +1,7 @@
 var User = require('../models/user.model');
 var db = require('../db');
 var shortid = require('shortid');
+// var csrf = require('csurf');
 
 module.exports.index = async function(req, res) {
     res.render('users/index', {
@@ -34,9 +35,13 @@ module.exports.get = async function(req, res) {
 };
 
 module.exports.postCreate = function(req, res) {
-    req.body.id = shortid.generate();
-    req.body.avatar = req.file.path.split('/').slice(1).join('/');
+    let data = {
+        id: shortid.generate(),
+        name: req.body.name,
+        phone: req.body.phone,
+        avatar: req.file.path.split('\\').slice(1).join('/')
+    }
 
-    db.get('users').push(req.body).write();
+    db.get('users').push(data).write();
     res.redirect('/users');
 };
